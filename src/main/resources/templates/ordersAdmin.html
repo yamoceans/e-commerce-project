@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <title>Orders Page</title>
+</head>
+<body>
+<header style="background: #ffcd39">
+    <h1>Welcome to CentCoop-Commerce</h1>
+    <p id="headerUsername">Username: </p>
+    <a href="https://192.168.253.1:8443/home/">
+        <button>Home</button>
+    </a>
+    <a href="https://192.168.253.1:8443/shop/">
+        <button>Shop</button>
+    </a>
+    <a id="orderButton" href="https://192.168.253.1:8443/orders">
+        <button>Orders</button>
+    </a>
+    <a href="https://192.168.253.1:8443/about">
+        <button>About</button>
+    </a>
+    <a id="logoutButton" href="https://192.168.253.1:8443/logout">
+        <button>Log Out</button>
+    </a>
+    <a id="loginButton" href="https://192.168.253.1:8443/login/">
+        <button>Login</button>
+    </a>
+    <a id="regButton" href="https://192.168.253.1:8443/registration/">
+        <button>Register Account</button>
+    </a>
+
+    <script>
+
+        isLoggedIn();
+        async function isLoggedIn()
+        {
+            try
+            {
+                //Get JSON file with user info:
+                const response = await fetch("https://192.168.253.1:8443/userInfoJSON")
+
+                if(!response.ok)
+                {
+                    throw new Error("Could not fetch user info");
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                const username = data.username;
+
+                if(data.isLoggedIn == true)
+                {
+                    document.getElementById("headerUsername").innerText = "Username: " + data.username;
+                    document.getElementById("loginButton").remove();
+                    document.getElementById("regButton").remove();
+                }
+                else
+                {
+                    document.getElementById("logoutButton").remove();
+                    document.getElementById("headerUsername").innerText = "Username: (Not Logged In)";
+                    document.getElementById("orderButton").remove();
+                }
+
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+    </script>
+</header>
+
+<main>
+
+    <form method="post" th:action="@{showOrdersBy}">
+        <label for="showDropDown">Show</label>>
+        <select id="showDropDown" th:name="showOrderBy">
+            <option value="all">All Orders</option>
+            <option value="active">Active Orders Only</option>
+            <option value="inactive">Inactive Orders Only</option>
+        </select>
+        <button type="submit">Show</button>>
+    </form>
+
+    <form method="post" th:action="@{finalize}">
+        <table bgcolor="black">
+            <thead>
+            <tr bgcolor="#a9a9a9">
+                <th> Order ID </th>
+                <th> User ID </th>
+                <th> Created By ID </th>
+                <th> Product List </th>
+                <th> First Name </th>
+                <th> Last Name </th>
+                <th> Company Name </th>
+                <th> Total Payment </th>
+                <th> Registration Number </th>
+                <th> Bank Account Number </th>
+                <th> Email </th>
+                <th> Phone Number </th>
+                <th> State </th>
+                <th> To Address </th>
+                <th> Zip Code </th>
+                <th> Creation Date </th>
+                <th> Return Address </th>
+                <th> Is Active? </th>
+                <th>   </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:if="${orders.empty}">
+                <p> No Orders Available </p>
+            </tr>
+            <tr th:each="order : ${orders}" bgcolor="#d3d3d3" align="center" >
+                <td><span th:text="${order.orderID}"> Order ID </span></td>
+                <td><span th:text="${order.userID}"> User ID </span></td>
+                <td><span th:text="${order.createdByID}"> Created by ID </span></td>
+                <td><span th:text="${order.productList}"> Product List </span></td>
+                <td><span th:text="${order.firstName}"> First Name </span></td>
+                <td><span th:text="${order.lastName}"> Last Name </span></td>
+                <td><span th:text="${order.companyName}"> Company Name </span></td>
+                <td><span th:text="${order.totalPayment}"> Total Payment </span></td>
+                <td><span th:text="${order.registrationNumber}"> Registration Number </span></td>
+                <td><span th:text="${order.bankAccountNumber}"> Bank Account Number </span></td>
+                <td><span th:text="${order.email}"> Email </span></td>
+                <td><span th:text="${order.phoneNumber}"> Phone Number </span></td>
+                <td><span th:text="${order.state}"> State </span></td>
+                <td><span th:text="${order.toAddress}"> To Address </span></td>
+                <td><span th:text="${order.zipCode}"> Zip Code </span></td>
+                <td><span th:text="${order.creationDate}"> Creation Date </span></td>
+                <td><span th:text="${order.returnAddress}"> Return Address </span></td>
+                <td><span th:if="${order.isActive == 1}"> True </span>
+                    <span th:unless="${order.isActive == 1}"> False </span></td>
+                <td><span th:if="${order.isActive == 1}"><button th:name="finalizeOrder" type="submit" th:value="${order.orderID}">Finalize Order</button></span>
+                    <span th:unless="${order.isActive == 1}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>>
+</main>
+<footer>
+
+</footer>
+</body>
+</html>

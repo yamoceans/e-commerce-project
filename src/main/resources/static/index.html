@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <title>Welcome Page</title>
+</head>
+<body>
+<header style="background: #ffcd39">
+    <h1>Welcome to CentCoop-Commerce</h1>
+    <p id="headerUsername">Username: </p>
+    <a href="https://192.168.253.1:8443/home/">
+        <button>Home</button>
+    </a>
+    <a href="https://192.168.253.1:8443/shop/">
+        <button>Shop</button>
+    </a>
+    <a id="orderButton" href="https://192.168.253.1:8443/orders">
+        <button>Orders</button>
+    </a>
+    <a href="https://192.168.253.1:8443/about">
+        <button>About</button>
+    </a>
+    <a id="logoutButton" href="https://192.168.253.1:8443/logout">
+        <button>Log Out</button>
+    </a>
+    <a id="loginButton" href="https://192.168.253.1:8443/login/">
+        <button>Login</button>
+    </a>
+    <a id="regButton" href="https://192.168.253.1:8443/registration/">
+        <button>Register Account</button>
+    </a>
+
+    <script>
+
+        isLoggedIn();
+        async function isLoggedIn()
+        {
+            try
+            {
+                //Get JSON file with user info:
+                const response = await fetch("https://192.168.253.1:8443/userInfoJSON")
+
+                if(!response.ok)
+                {
+                    throw new Error("Could not fetch user info");
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                const username = data.username;
+
+                if(data.isLoggedIn == true)
+                {
+                    document.getElementById("headerUsername").innerText = "Username: " + data.username;
+                    document.getElementById("loginButton").remove();
+                    document.getElementById("regButton").remove();
+                }
+                else
+                {
+                    document.getElementById("logoutButton").remove();
+                    document.getElementById("headerUsername").innerText = "Username: (Not Logged In)";
+                    document.getElementById("orderButton").remove();
+                }
+
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+
+    </script>
+</header>
+<main>
+    <pre>
+        Welcome to the CentCoop-Commerce website.
+        Here you can sell your sorted bags and compressed waste.
+        You can place an order in the shop page, fill in the necessary information, and we will pick it up.</pre>
+</main>
+<footer>
+
+</footer>
+</body>
+</html>

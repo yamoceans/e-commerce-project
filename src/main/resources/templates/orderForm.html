@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <title>Order Form</title>
+</head>
+<body>
+<header style="background: #ffcd39">
+    <h1>Welcome to CentCoop-Commerce</h1>
+    <p id="headerUsername">Username: </p>
+    <a href="https://192.168.253.1:8443/home/">
+        <button>Home</button>
+    </a>
+    <a href="https://192.168.253.1:8443/shop/">
+        <button>Shop</button>
+    </a>
+    <a id="orderButton" href="https://192.168.253.1:8443/orders">
+        <button>Orders</button>
+    </a>
+    <a href="https://192.168.253.1:8443/about">
+        <button>About</button>
+    </a>
+    <a id="logoutButton" href="https://192.168.253.1:8443/logout">
+        <button>Log Out</button>
+    </a>
+    <a id="loginButton" href="https://192.168.253.1:8443/login/">
+        <button>Login</button>
+    </a>
+    <a id="regButton" href="https://192.168.253.1:8443/registration/">
+        <button>Register Account</button>
+    </a>
+
+    <script>
+
+        isLoggedIn();
+        async function isLoggedIn()
+        {
+            try
+            {
+                //Get JSON file with user info:
+                const response = await fetch("https://192.168.253.1:8443/userInfoJSON")
+
+                if(!response.ok)
+                {
+                    throw new Error("Could not fetch user info");
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                const username = data.username;
+
+                if(data.isLoggedIn == true)
+                {
+                    document.getElementById("headerUsername").innerText = "Username: " + data.username;
+                    document.getElementById("loginButton").remove();
+                    document.getElementById("regButton").remove();
+                }
+                else
+                {
+                    document.getElementById("logoutButton").remove();
+                    document.getElementById("headerUsername").innerText = "Username: (Not Logged In)";
+                    document.getElementById("orderButton").remove();
+                }
+
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+
+    </script>
+</header>
+<main>
+
+    <form method="post" th:action="@{orderCreated}" th:object="${orderModel}">
+
+        <label for="firstName">First Name</label>>
+        <input th:field="*{firstName}" id="firstName" type="text" placeholder="First Name" required>
+        <br>
+        <label for="lastName">Last Name</label>>
+        <input th:field="*{lastName}" id="lastName" type="text" placeholder="Last Name" required>
+        <br>
+        <label for="companyName">Company Name</label>>
+        <input th:field="*{companyName}" id="companyName" type="text" placeholder="Company Name" required>
+        <br>
+        <label for="registrationNumber">Registration Number</label>>
+        <input th:field="*{registrationNumber}" id="registrationNumber" type="text" placeholder="1234567" required>
+        <br>
+        <label for="bankAccountNumber">Bank Account Number</label>>
+        <input th:field="*{bankAccountNumber}" id="bankAccountNumber" type="text" placeholder="123456789" required>
+        <br>
+        <label for="email">Email Address</label>>
+        <input th:field="*{email}" id="email" type="email" placeholder="Email Address" required>
+        <br>
+        <label for="phoneNumber">Phone Number (Include country code) </label>>
+        <input th:field="*{phoneNumber}" id="phoneNumber" type="tel" placeholder="Phone Number" required>
+        <br>
+        <label for="address">Cooperative Address</label>>
+        <input th:field="*{toAddress}" id="address" type="text" placeholder="Address" required>
+        <br>
+        <label for="zip">Zip Code</label>>
+        <input th:field="*{zipCode}" id="zip" type="text" placeholder="12345-678" required>
+        <br>
+        <div>
+            <label for="stateDropDown">Cooperative's State Code:</label>>
+            <select th:field="*{state}" id="stateDropDown">
+                <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AP">AP</option>
+                <option value="AM">AM</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MT">MT</option>
+                <option value="MS">MS</option>
+                <option value="MG">MG</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PR">PR</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RS">RS</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="SC">SC</option>
+                <option value="SP">SP</option>
+                <option value="SE">SE</option>
+                <option value="TO">TO</option>
+            </select>
+        </div>
+        <br>
+        <input type="submit">
+
+    </form>>
+
+</main>
+<footer>
+
+</footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <title>Shop</title>
+</head>
+<body>
+<header style="background: #ffcd39">
+    <h1>Welcome to CentCoop-Commerce</h1>
+    <p id="headerUsername">Username: </p>
+    <a href="https://192.168.253.1:8443/home/">
+        <button>Home</button>
+    </a>
+    <a href="https://192.168.253.1:8443/shop/">
+        <button>Shop</button>
+    </a>
+    <a id="orderButton" href="https://192.168.253.1:8443/orders">
+        <button>Orders</button>
+    </a>
+    <a href="https://192.168.253.1:8443/about">
+        <button>About</button>
+    </a>
+    <a id="logoutButton" href="https://192.168.253.1:8443/logout">
+        <button>Log Out</button>
+    </a>
+    <a id="loginButton" href="https://192.168.253.1:8443/login/">
+        <button>Login</button>
+    </a>
+    <a id="regButton" href="https://192.168.253.1:8443/registration/">
+        <button>Register Account</button>
+    </a>
+
+    <script>
+
+        isLoggedIn();
+        async function isLoggedIn()
+        {
+            try
+            {
+                //Get JSON file with user info:
+                const response = await fetch("https://192.168.253.1:8443/userInfoJSON")
+
+                if(!response.ok)
+                {
+                    throw new Error("Could not fetch user info");
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                const username = data.username;
+
+                if(data.isLoggedIn == true && username != "")
+                {
+                    document.getElementById("headerUsername").innerText = "Username: " + data.username;
+                    document.getElementById("loginButton").remove();
+                    document.getElementById("regButton").remove();
+                    document.getElementById("messageIfNotLoggedIn").remove();
+                    document.getElementById("errorMessage").remove();
+                }
+                else if(data.isLoggedIn == true && (data.username === "" || data.role === null))
+                {
+                    document.getElementById("headerUsername").innerText = "Username: " + data.username;
+                    document.getElementById("loginButton").remove();
+                    document.getElementById("regButton").remove();
+                    document.getElementById("messageIfNotLoggedIn").remove();
+                    document.getElementById("submitButton").remove();
+                }
+                else
+                {
+                    document.getElementById("logoutButton").remove();
+                    document.getElementById("headerUsername").innerText = "Username: (Not Logged In)";
+                    document.getElementById("orderButton").remove();
+                    document.getElementById("submitButton").remove();
+                    document.getElementById("errorMessage").remove();
+                    document.getElementById("errorMessage").remove();
+                }
+
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
+        }
+
+    </script>
+</header>
+<main>
+    <form method="post" th:action="@{orderForm}" th:object="${productListModel}">
+        <label for="softPlasticBags" class="form-label"><span th:text="${softPlasticBagsInfo}"></span></label>
+        <input id="softPlasticBags" th:field="*{softPlasticBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="hardPlasticBags" class="form-label"><span th:text="${hardPlasticBagsInfo}"></span></label>
+        <input id="hardPlasticBags" th:field="*{hardPlasticBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="aluminiumBags" class="form-label"><span th:text="${aluminiumBagsInfo}"></span></label>
+        <input id="aluminiumBags" th:field="*{aluminiumBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="glassBags" class="form-label"><span th:text="${glassBagsInfo}"></span></label>
+        <input id="glassBags" th:field="*{glassBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="softPaperBags" class="form-label"><span th:text="${softPaperBagsInfo}"></span></label>
+        <input id="softPaperBags" th:field="*{softPaperBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="hardPaperBags" class="form-label"><span th:text="${hardPaperBagsInfo}"></span></label>
+        <input id="hardPaperBags" th:field="*{hardPaperBagsNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="softPlasticCompressed" class="form-label"><span th:text="${softPlasticCompressedInfo}"></span></label>
+        <input id="softPlasticCompressed" th:field="*{softPlasticCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="hardPlasticCompressed" class="form-label"><span th:text="${hardPlasticCompressedInfo}"></span></label>
+        <input id="hardPlasticCompressed" th:field="*{hardPlasticCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="aluminiumCompressed" class="form-label"><span th:text="${aluminiumCompressedInfo}"></span></label>
+        <input id="aluminiumCompressed" th:field="*{aluminiumCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="glassCompressed" class="form-label"><span th:text="${glassCompressedInfo}"></span></label>
+        <input id="glassCompressed" th:field="*{glassCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="softPaperCompressed" class="form-label"><span th:text="${softPaperCompressedInfo}"></span></label>
+        <input id="softPaperCompressed" th:field="*{softPaperCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <label for="hardPaperCompressed" class="form-label"><span th:text="${hardPaperCompressedInfo}"></span></label>
+        <input id="hardPaperCompressed" th:field="*{hardPaperCompressedNum}" type="number" min="0" max="99" required>
+        <br>
+        <input id="submitButton" type="submit">
+        <p id="errorMessage" style="color: red"><b>Error: Try logging out and in again</b></p>
+        <p id="messageIfNotLoggedIn"><b>Please Log in if you want to place an order</b></p>
+
+    </form>
+</main>
+<footer>
+
+</footer>
+
+</body>
+</html>
